@@ -1,12 +1,7 @@
-# Leitura do número real
-numero = float(input("Digite um número real: "))
-
-# Separando parte inteira e decimal
-parte_inteira = int(numero)
-parte_decimal = numero - parte_inteira
-
-# Verificando se a parte decimal é maior que a parte inteira
-if parte_decimal > parte_inteira:
+n = float(input("Digite um número real: "))
+parte_decimal = n -int(n)
+parte_decimal_int = int(parte_decimal *10**len(str(parte_decimal).split('.')[1]))
+if parte_decimal_int > n:
     print("A parte decimal é maior que a parte inteira.")
 else:
     print("A parte decimal não é maior que a parte inteira.")
