@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor de Vídeos para Reels</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #f5f5f5; color: #333; }
+        h1 { text-align: center; color: #333; }
+        .card { background: white; border-radius: 8px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .video-player { width: 100%; max-width: 600px; border-radius: 4px; }
+        .slider-container { margin: 20px 0; }
+        .slider { width: 100%; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="file"], button { padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; }
+        button { background: #007bff; color: white; cursor: pointer; width: 100%; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        .progress { width: 100%; height: 20px; background: #ddd; border-radius: 10px; overflow: hidden; margin: 10px 0; }
+        .progress-bar { height: 100%; background: #007bff; width: 0%; transition: width 0.3s; }
+        .clips-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .clip-card { background: #f9f9f9; padding: 15px; border-radius: 8px; border: 1px solid #ddd; }
+        .thumbnail { width: 100%; height: 150px; background: #eee; display: flex; align-items: center; justify-content: center; border-radius: 4px; margin-bottom: 10px; }
+        .legend { background: #e9ecef; padding: 10px; border-radius: 4px; font-size: 14px; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <h1>Editor de Vídeos para Reels</h1>
+    <p style="text-align: center; color: #666;">Faça upload de um vídeo, divida em partes de 1-2 minutos e adicione legendas automaticamente.</p>
+
+    <div class="card">
+        <h2>Upload do Vídeo</h2>
+        <input type="file" id="videoFile" accept="video/*" onchange="handleFileChange(this)">
+        <div id="videoPreview" class="hidden">
+            <video id="videoPlayer" class="video-player" controls></video>
+            <p id="videoDuration">Duração: 0:00</p>
+        </div>
+    </div>
+
+    <div id="settingsCard" class="card hidden">
+        <h2>Configurações de Divisão</h2>
+        <div class="slider-container">
+            <label for="clipDuration">Duração do Clipe: <span id="durationDisplay">1:30</span></label>
+            <input type="range" id="clipDuration" class="slider" min="60" max="120" value="90" step="5" oninput="updateDurationDisplay()">
+            <div style="display: flex; justify-content: space-between; font-size: 12px; color: #666;">
+                <span>1 minuto</span>
+                <span>2 minutos</span>
+            </div>
+            <p id="clipsEstimate">O vídeo será dividido em aproximadamente X clipes.</p>
+        </div>
+        <button id="generateBtn" onclick="generateClips()">Gerar Clipes com Legendas</button>
+        <div id="progressContainer" class="hidden">
+            <div class="progress">
+                <div id="progressBar" class="progress-bar"></div>
+            </div>
+            <p id="progressText">Processando... 0%</p>
+        </div>
+    </div>
+
+    <div id="clipsSection" class="card hidden">
+        <h2>Clipes Gerados</h2>
+        <p>Seus vídeos divididos e legendados prontos para download.</p>
+        <div id="clipsGrid" class="clips-grid"></div>
+    </div>
+
+    <script>
+        let videoFile = null;
+        let videoDuration = 0;
+        let clips = [];
+        let isProcessing = false;
+
+        function handleFileChange(input) {
+            const file = input.files[0];
+            if (file && file.type.startsWith('video/')) {
+                videoFile = file;
+                const videoPlayer = document.getElementById('videoPlayer');
+                videoPlayer.src = URL.createObjectURL(file);
+                videoPlayer.onloadedmetadata = function() {
+                    videoDuration = this.duration;
+                    document.getElementById('videoDuration').textContent = `Duração: ${Math.floor(videoDuration / 60)}:${Math.floor(videoDuration % 60).toString().padStart(2, '0')}`;
+                    document.getElementById('videoPreview').classList.remove('hidden');
+                    document.getElementById('settingsCard').classList.remove('hidden');
+                    updateClipsEstimate();
+                };
+            }
+        }
+
+        function updateDurationDisplay() {
+            const slider = document.getElementById('clipDuration');
+            const value = parseInt(slider.value);
+            const minutes = Math.floor(value / 60);
+            const seconds = value % 60;
+            document.getElementById('durationDisplay').textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            updateClipsEstimate();
+        }
+
+        function updateClipsEstimate() {
+            if (videoDuration > 0) {
+                const clipDuration = parseInt(document.getElementById('clipDuration').value);
+                const numClips = Math.ceil(videoDuration / clipDuration);
+                document.getElementById('clipsEstimate').textContent = `O vídeo será dividido em aproximadamente ${numClips} clipes.`;
+            }
+        }
+
+        function generateClips() {
+            if (isProcessing || videoDuration === 0) return;
+            
+            isProcessing = true;
+            const clipDuration = parseInt(document.getElementById('clipDuration').value);
+            const totalClips = Math.ceil(videoDuration / clipDuration);
+            clips = [];
+            let progress = 0;
+
+            document.getElementById('generateBtn').disabled = true;
+            document.getElementById('generateBtn').textContent = 'Processando...';
+            document.getElementById('progressContainer').classList.remove('hidden');
+
+            const interval = setInterval(() => {
+                progress += 100 / (totalClips * 2); // Simula progresso
+                document.getElementById('progressBar').style.width = progress + '%';
+                document.getElementById('progressText').textContent = `Processando... ${Math.round(progress)}%`;
+
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    isProcessing = false;
+                    
+                    // Gera clipes simulados
+                    for (let i = 0; i < totalClips; i++) {
+                        const start = i * clipDuration;
+                        const end = Math.min((i + 1) * clipDuration, videoDuration);
+                        const startTime = new Date(start * 1000).toISOString().substr(14, 5);
+                        const endTime = new Date(end * 1000).toISOString().substr(14, 5);
+                        
+                        clips.push({
+                            index: i + 1,
+                            start,
+                            end,
+                            text: `Legenda automática para o clipe ${i+1} - ${startTime} a ${endTime}. Conteúdo transcrito do áudio aqui.`
+                        });
+                    }
+                    
+                    displayClips();
+                    document.getElementById('clipsSection').classList.remove('hidden');
+                    document.getElementById('generateBtn').disabled = false;
+                    document.getElementById('generateBtn').textContent = 'Gerar Novos Clipes';
+                    document.getElementById('progressContainer').classList.add('hidden');
+                }
+            }, 300); // Velocidade da simulação
+        }
+
+        function displayClips() {
+            const grid = document.getElementById('clipsGrid');
+            grid.innerHTML = '';
+            
+            clips.forEach(clip => {
+                const clipCard = document.createElement('div');
+                clipCard.className = 'clip-card';
+                clipCard.innerHTML = `
+                    <h3>Clipe ${clip.index}</h3>
+                    <p>${new Date(clip.start * 1000).toISOString().substr(14, 5)} - ${new Date(clip.end * 1000).toISOString().substr(14, 5)}</p>
+                    <div class="thumbnail">
+                        <span>▶️ Miniatura do Vídeo</span>
+                    </div>
+                    <p><strong>Legenda automática:</strong></p>
+                    <div class="legend">${clip.text}</div>
+                    <button onclick="downloadClip(${clip.index})" style="width: 100%; margin-top: 10px;">Download do Clipe</button>
+                `;
+                grid.appendChild(clipCard);
+            });
+        }
+
+        function downloadClip(index) {
+            alert(`Download do clipe ${index} iniciado! Em uma versão real, isso baixaria o MP4 com legendas SRT embutidas.`);
+            // Para download real, use createObjectURL ou integre com Canvas/MediaRecorder para exportar.
+        }
+    </script>
+</body>
+</html>
