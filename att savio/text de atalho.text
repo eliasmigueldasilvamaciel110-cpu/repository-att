@@ -1,0 +1,12 @@
+
+# Descobre a raiz inteira
+raiz = int(n ** 0.5)
+
+# Verifica se elevando ao quadrado dá o número
+if raiz * raiz == n:
+    print(f"{n} é um quadrado perfeito!")
+else:
+    print(f"{n} não é um quadrado perfeito.")
+Explicação da mudança:
+
+int(i ** 0.5) ou math.isqrt(i) remove os decimais e evita problemas de arredondamento.
