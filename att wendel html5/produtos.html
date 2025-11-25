@@ -4,48 +4,111 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Produtos</title>
+        <style>
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #d3291d;
+            color: rgb(255, 255, 255);
+            padding: 12px 0;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+        }
+
+        nav {
+            background-color: #ffb700;
+            padding: 8px 0;
+            margin-top: 8px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        nav a {
+            color: #1f2937;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 6px 10px;
+            border-radius: 4px;
+        }
+
+        main {
+            margin-top: 140px;
+            padding: 24px;
+            background-color: #ffffff;
+            min-height: calc(100vh - 120px);
+        }
+
+        section {
+            background: linear-gradient(#e9f5ff, #ffffff);
+            padding: 12px;
+            max-width: 1100px;
+            margin: 0 auto;
+            border-radius: 6px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #fff;
+        }
+
+        th, td {
+            padding: 10px 12px;
+            border: 1px solid #e2e8f0;
+            text-align: left;
+        }
+
+        th {
+            background: #f8fafc;
+        }
+        </style>
 </head>
 <body>
 
     <header>
         <h1>Produtos</h1>
-        <nav>
-            <a href="index.html">Voltar ao Início</a>
-        </nav>
+                <nav>
+                        <a href="index.html">Voltar ao Início</a>
+                </nav>
     </header>
-    <main>
-        <table border="1" cellpadding="8" cellspacing="0">
-            <thead>
-                <tr>
-                    <th>Produto</th>
-                    <th>Descrição</th>
-                    <th>Detalhes</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Produto 1</td>
-                    <td>Escultura de gato pequeno</td>
-                    <td><a href="produto1.html">Ver mais</a></td>
-                </tr>
-                <tr>
-                    <td>Produto 2</td>
-                    <td>Escultura de gato médio</td>
-                    <td><a href="produto2.html">Ver mais</a></td>
-                </tr>
-                <tr>
-                    <td>Produto 4</td>
-                    <td>Escultura de gato grande</td>
-                    <td><a href="produto4.html">Ver mais</a></td>
-                </tr>
-                <tr>
-                    <td>Produto 6</td>
-                    <td>Escultura de gato estilizado</td>
-                    <td><a href="produto6.html">Ver mais</a></td>
-                </tr>
-            </tbody>
-        </table>
-    </main>
+        <main>
+                <section>
+                        <table>
+                                <thead>
+                                        <tr>
+                                                <th>Produto</th>
+                                                <th>Descrição</th>
+                                                <th>Detalhes</th>
+                                        </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                                <td>Produto 1</td>
+                                                <td>Escultura de gato pequeno</td>
+                                                <td><a href="produto1.html">Ver mais</a></td>
+                                        </tr>
+                                        <tr>
+                                                <td>Produto 2</td>
+                                                <td>Escultura de gato médio</td>
+                                                <td><a href="produto2.html">Ver mais</a></td>
+                                        </tr>
+                                        <tr>
+                                                <td>Produto 4</td>
+                                                <td>Escultura de gato grande</td>
+                                                <td><a href="produto4.html">Ver mais</a></td>
+                                        </tr>
+                                        <tr>
+                                                <td>Produto 6</td>
+                                                <td>Escultura de gato estilizado</td>
+                                                <td><a href="produto6.html">Ver mais</a></td>
+                                        </tr>
+                                </tbody>
+                        </table>
+                </section>
+        </main>
 
 </body>
 </html>

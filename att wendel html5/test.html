@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+><!DOCTYPE html>
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
@@ -6,9 +6,16 @@
   <title>Header e Nav Separados</title>
   <style>
     /* Estilos gerais */
+    html, body {
+      height: 100%;
+    }
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
+      background: #fafafa;
+      display: flex;
+      flex-direction: column; /* permite que o container ocupe a altura restante */
     }
 
     /* HEADER (cabeçalho) */
@@ -38,10 +45,50 @@
       color: #222;
     }
 
-    /* CONTEÚDO PRINCIPAL */
-    main {
+    /* LAYOUT: container com sidebar lateral e conteúdo principal */
+    .container {
+      display: flex;
+      gap: 20px;
       padding: 20px;
-      text-align: center;
+      align-items: stretch;
+      flex: 1; /* ocupa a altura restante da página abaixo de header e nav */
+    }
+
+    aside {
+      width: 250px;
+      background: #664c4c;
+      padding: 20px;
+      border-radius: 6px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      height: 100%; /* garante que a sidebar alcance o final da página */
+    }
+
+    aside h3 {
+      margin-top: 0;
+    }
+
+    main {
+      flex: 1;
+      padding: 20px;
+      background: white;
+      border-radius: 6px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+      overflow: auto; /* permite rolagem do conteúdo sem afetar a sidebar */
+    }
+
+    /* Responsivo: empilha em telas pequenas */
+    @media (max-width: 800px) {
+      .container {
+        flex-direction: column;
+        padding: 12px;
+      }
+      aside {
+        width: 100%;
+        height: auto;
+      }
+      main {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -58,10 +105,21 @@
     <a href="#">Contato</a>
   </nav>
 
-  <main>
-    <h2>Conteúdo da Página</h2>
-    <p>A navegação está logo abaixo do header, com outra cor de fundo.</p>
-  </main>
+  <div class="container">
+    <aside>
+      <h3>Barra Lateral</h3>
+      <ul>
+        <li><a href="#">Link 1</a></li>
+        <li><a href="#">Link 2</a></li>
+        <li><a href="#">Link 3</a></li>
+      </ul>
+    </aside>
+
+    <main>
+      <h2>Conteúdo da Página</h2>
+      <p>A navegação está logo abaixo do header, com outra cor de fundo. Aqui fica o conteúdo principal à direita da barra lateral.</p>
+    </main>
+  </div>
 
 </body>
 </html>
